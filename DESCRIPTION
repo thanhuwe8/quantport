@@ -11,3 +11,9 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/thanhuwe8/quantport
 BugReports: https://github.com/thanhuwe8/quantport/issues
+Imports: 
+    quadprog
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
