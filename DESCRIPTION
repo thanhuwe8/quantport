@@ -1,20 +1,14 @@
 Package: quantport
-Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: Portfolio Optimization Routines
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Thanh",
+           family = "Nguyen Minh",
+           role = c("aut", "cre"),
+           email = "thanhuwe8@example.com")
+Description: Portfolio Optimization using Quadratic Programming and Sequential Programming
+License: GPL-2
 Encoding: UTF-8
+Imports: quadprog, ggplot2, NlcOptim, tidyverse
 LazyData: true
-URL: https://github.com/thanhuwe8/quantport
-BugReports: https://github.com/thanhuwe8/quantport/issues
-Imports: 
-    quadprog
-Suggests: 
-    knitr,
-    rmarkdown
-VignetteBuilder: knitr
 RoxygenNote: 6.1.1

@@ -7,7 +7,17 @@
 MinvarWeight(ret, covmat, target, short = TRUE, freq)
 }
 \arguments{
+\item{ret}{a vector stores mean return of assets (\samp{N x 1}). A vector should store daily, monthly
+or quarterly return.}
+
+\item{covmat}{a matrix stores covariance matrix of asset returns. A matrix should be scaled by daily, monthly
+or quarterly return alligned with `ret` vector.}
+
+\item{short}{a boolean stores TRUE for short sale constraint or FALSE for no constraint}
+
 \item{freq}{}
+
+\item{rf}{a scalar store annualized risk free rate}
 }
 \description{
 Compute the minumum variance portfolio given target return based on Quadratic Programming.

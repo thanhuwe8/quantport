@@ -4,12 +4,13 @@
 #' @description
 #' Compute the minumum variance portfolio given target return based on Quadratic Programming.
 #' Short sale constraint could be used. Lower and upper bound could not be implemented by this function
-#'
-#'
-#' @param ret
-#' @param covmat
+#' @param ret a vector stores mean return of assets (\samp{N x 1}). A vector should store daily, monthly
+#' or quarterly return.
+#' @param covmat a matrix stores covariance matrix of asset returns. A matrix should be scaled by daily, monthly
+#' or quarterly return alligned with `ret` vector.
 #' @param target
-#' @param short
+#' @param short a boolean stores TRUE for short sale constraint or FALSE for no constraint
+#' @param rf a scalar store annualized risk free rate
 #' @param freq
 #'
 #' @return

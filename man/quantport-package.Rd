@@ -4,17 +4,12 @@
 \name{quantport-package}
 \alias{quantport}
 \alias{quantport-package}
-\title{quantport: What the Package Does (Title Case)}
+\title{quantport: Portfolio Optimization Routines}
 \description{
-More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Portfolio Optimization using Quadratic Programming and Sequential Programming
 }
-\seealso{
-Useful links:
-\itemize{
-  \item \url{https://github.com/thanhuwe8/quantport}
-  \item Report bugs at \url{https://github.com/thanhuwe8/quantport/issues}
-}
+\author{
+\strong{Maintainer}: Thanh Nguyen Minh \email{thanhuwe8@example.com}
 
 }
 \keyword{internal}

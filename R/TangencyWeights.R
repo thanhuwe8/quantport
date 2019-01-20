@@ -44,13 +44,16 @@ TangencyQP <- function(ret, covmat, short=TRUE, rf=0, freq){
     }
     switch(freq,
            daily = {
-               excessret = ret-rf/252
+               rff = rf/252
+               excessret = ret-rff
            },
            monthly = {
-               excessret = ret-rf/12
+               rff = rf/12
+               excessret = ret-rff
            },
            quarterly = {
-               excessret = ret-rf/4
+               rff = rf/4
+               excessret = ret-rf
            })
     if(short==FALSE){
         # Numerical Solution
@@ -70,14 +73,14 @@ TangencyQP <- function(ret, covmat, short=TRUE, rf=0, freq){
         # Analytical Solution
         covmat_inverse <- solve(covmat)
         ones <- rep(1,N)
-        ret_minus_rfones <- ret-rf*ones
+        ret_minus_rfones <- ret-rff*ones
         numer <- covmat_inverse%*%ret_minus_rfones
         denom <- as.numeric(t(ones)%*%numer)
 
         tangencyWeight <- numer[,1]/denom
         portfolioret <- t(tangencyWeight)%*%ret
         portfoliosd <- sqrt(t(tangencyWeight)%*%covmat%*%tangencyWeight)
-        sharpeRatio <- (portfolioret-rf)/portfoliosd
+        sharpeRatio <- (portfolioret-rff)/portfoliosd
     }
     # switch to scale return and standard deviation
     switch(freq,
