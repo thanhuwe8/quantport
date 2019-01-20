@@ -18,7 +18,7 @@ studies such as CFA, FRM or courses in portfolio management.
 
 ## Installation
 
-We are submitting to [CRAN](https://CRAN.R-project.org) for publish in
+We plan to submit this package to [CRAN](https://CRAN.R-project.org) in
 the near future. At the mean time, the package could be downloaded via
 github using `devtools`:
 
@@ -88,7 +88,7 @@ optimal portfolio with maximum Sharpe
 Ratio.
 
 ``` r
-tangency_result <- TangencyQP(mean_vec, cov_mat, short=TRUE, rf=0, "monthly") 
+tangency_result <- quantport::TangencyQP(mean_vec, cov_mat, short=TRUE, rf=0, "monthly") 
 barplot(tangency_result$weight)
 ```
 

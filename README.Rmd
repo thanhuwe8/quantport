@@ -20,7 +20,7 @@ The main advantage of this package is easy-to-use and simplicity. The package is
 
 ## Installation
 
-We are submitting to [CRAN](https://CRAN.R-project.org) for publish in the near future. At the mean time, the package could be downloaded via github using `devtools`:
+We plan to submit this package to [CRAN](https://CRAN.R-project.org) in the near future. At the mean time, the package could be downloaded via github using `devtools`:
 
 ``` r
 devtools::install_github("thanhuwe8/quantport")
@@ -49,7 +49,7 @@ print(mean_vec);print(cov_mat)
 Then we provide some inputs to the `TangencyQP` to find the weight of optimal portfolio with maximum Sharpe Ratio. 
 
 ```{r TangencyQP}
-tangency_result <- TangencyQP(mean_vec, cov_mat, short=TRUE, rf=0, "monthly") 
+tangency_result <- quantport::TangencyQP(mean_vec, cov_mat, short=TRUE, rf=0, "monthly") 
 barplot(tangency_result$weight)
 ```
 
