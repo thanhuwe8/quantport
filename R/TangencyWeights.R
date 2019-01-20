@@ -4,7 +4,7 @@
 #'
 #' @description
 #' Compute the tangency portfolio weight which maximizes sharpe ratio based on Quadratic Programming Algorithm.
-#' Short sale constraint could be used. Lower and upper bound for each asset could not be used by this
+#' Short sale constraint could be used. Lower and upper bound for each asset could not be implemented by this
 #' function. Please refer to `TangencySQ` to implement lower and upper boundary for weight.
 #'
 #' @param ret a vector stores mean return of assets (\samp{N x 1}). A vector should store daily, monthly
@@ -52,7 +52,7 @@ TangencyQP <- function(ret, covmat, short=TRUE, rf=0, freq){
            quarterly = {
                excessret = ret-rf/4
            })
-    if(short==TRUE){
+    if(short==FALSE){
         # Numerical Solution
         N <- length(excessret)
         Dmat <- 2*covmat
@@ -98,5 +98,6 @@ TangencyQP <- function(ret, covmat, short=TRUE, rf=0, freq){
            }
     )
 
-    result <-  list(tangencyWeight, portfolioret, portfoliosd, sharpeRatio)
+    result <-  list(weight=tangencyWeight, portfolioret=portfolioret,
+                    portfoliosd=portfoliosd, SharpeRatio=sharpeRatio)
 }
