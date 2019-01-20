@@ -53,16 +53,16 @@ showEfficient <- function(ret, covmat, short,rf=0, freq, simpoints, assetpoints)
     if (assetpoints==TRUE){
         plotfin <- ggplot(ret_and_sd, aes(x=portfoliosd, y=portfolioret))+geom_point()+
             scale_color_brewer(palette="Paired")+ggtitle("Efficient Frontier")+
-            xlab("Date")+
-            ylab("Return according to frequency of data")+
+            xlab("Annualized standard deviation")+
+            ylab("Annualized mean return")+
             geom_point(aes(x=tangency_sd,y=tangency_ret), colour="red")+
             geom_point(aes(x=minvar_sd,y=minvar_ret), colour="green")
     } else if (assetpoints==FALSE){
         plotdataF <- ret_and_sd[-(1:noa),]
         plotfin <- ggplot(plotdataF, aes(x=portfoliosd,y=portfolioret))+ geom_point() +
             scale_color_brewer(palette="Paired")+ggtitle("Efficient Frontier")+
-            xlab("Date")+
-            ylab("Return according to frequency of data")+
+            xlab("Annualized standard deviation")+
+            ylab("Annualized mean return")+
             geom_point(aes(x=tangency_sd,y=tangency_ret))+
             geom_point(aes(x=tangency_sd,y=tangency_ret), colour="red")+
             geom_point(aes(x=minvar_sd,y=minvar_ret), colour="green")
