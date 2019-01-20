@@ -1,6 +1,7 @@
+workflow/
 inst/doc
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-/workflow/
+
