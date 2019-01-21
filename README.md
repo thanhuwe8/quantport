@@ -5,22 +5,30 @@
 
 The package `quantport` provides routines to perform portfolio
 optimization based on quadratic and sequential programming. With Sharpe
-Ratio maximization problem, the lower boundary and upper boundary for
-any single asset could be implemented using Sequential Programming.
+Ratio maximization problem (tangency portfolio), the lower boundary and
+upper boundary for any single asset, as well as other constraints could
+be implemented using Sequential Programming.
 
 The main advantage of this package is easy-to-use and simplicity. The
 package is based purely on functional programming. You do not need to
 create object like S3 or S4 to run portfolio optimization. The result
 from optimization will be stored in dataframe or list only. The mean
 vector and the covariance matrix could be used from daily, monthly or
-quarterly data. The package could be used in complement with finance
-studies such as CFA, FRM or courses in portfolio management.
+quarterly data. The package could be used in complement with your master
+studies in portfolio optimization or courses such as CFA, FRM, etc.
+
+# Plan for development
+
+In the near future, we will add further functionalities including
+Differential Evolutionary Optimization (DE) and Canonical
+Black-Litterman model.
 
 ## Installation
 
-We plan to submit this package to [CRAN](https://CRAN.R-project.org) in
-the near future. At the mean time, the package could be downloaded via
-github using `devtools`:
+There are several packages required: `quadprog`, `DEoptim`, `NlcOptim`,
+`ggplot2` and `tidyverse`. We plan to submit this package to
+[CRAN](https://CRAN.R-project.org) in the near future. At the mean time,
+the package could be downloaded via github using `devtools`:
 
 ``` r
 devtools::install_github("thanhuwe8/quantport")
