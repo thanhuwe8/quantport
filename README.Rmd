@@ -33,27 +33,37 @@ devtools::install_github("thanhuwe8/quantport")
 
 This is a basic example which shows you how to solve the portfolio optimization problem. We have the data in the form of data.frame with 10 assets monthly return as below:
 
-```{r example}
+```{r example, echo=FALSE}
 library(quantport)
+library(knitr)
 library(ggplot2)
+```
+
+```{r example2}
 data(dataset1)
-head(dataset1,3)
+kable(head(dataset1,3))
 ```
 
 Then we calculate 2 required inputs for portfolio optimization as follows:
 
-```{r inputs}
+```{r inputs, }
 data_test <- dataset1[,-1]
 mean_vec <- apply(data_test, MARGIN=2, mean)
 cov_mat <- cov(data_test)
-print(mean_vec);print(cov_mat)
+kable(mean_vec)
+kable(cov_mat)
 ```
 
-Then we provide some inputs to the `TangencyQP` to find the weight of optimal portfolio with maximum Sharpe Ratio. 
+Then we provide necessary inputs to the `TangencyQP` to find the weight of optimal portfolio with maximum Sharpe Ratio. 
 
 ```{r TangencyQP}
-tangency_result <- quantport::TangencyQP(mean_vec, cov_mat, short=TRUE, rf=0, "monthly") 
-barplot(tangency_result$weight)
+tangency_result <- quantport::TangencyQP(ret=mean_vec,covmat=cov_mat,short=T,rf=0,freq="monthly") 
+optimal_weight <- data.frame(tangency_result$weight)
+```
+
+```{r barplot, echo=FALSE, dpi=400}
+ggplot()+geom_bar(aes(x=rownames(optimal_weight),y=optimal_weight[,1]), stat='identity', fill="#DE892C")+
+    xlab("Asset")+ylab("Weight")+ggtitle("Tangency Portfolio without short-selling constraint")
 ```
 
 Portfolio return and standard deviation are also stored and accessed using `$` operator
@@ -66,10 +76,17 @@ print(tangency_result$SharpeRatio)
 
 There are other useful functions you could find in the vignettes of this package. Below is the efficient frontier with short-sale constraints. The dots to the right of the curve is single asset risk-return trade-off point. The red dot is tangency portfolio and the green dot is minimum variance portfolio. Mean return and standard deviation are both annualized assuming 252 trading days.
 
-```{r efficient}
-ef <- quantport::showEfficient(mean_vec, cov_mat, F, 0.05, "monthly", 100, T) 
+```{r efficient, dpi=400}
+ef <- quantport::showEfficient(ret=mean_vec,covmat=cov_mat,short=F,rf=0.05,freq="monthly",simpoints=200,assetpoints=T) 
 ```
 
+The weight of all popular porfolio could be calculated using `UltimateWeight` function as below:
+
+```{r ultimate, dpi = 400}
+final_result <- UltimateWeight(ret=mean_vec,covmat=cov_mat, short=T,target=0.08,rf=0,freq="monthly")
+kable(round(final_result[[1]],4))
+kable(final_result[[2]])
+```
 
 
 
