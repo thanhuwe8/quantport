@@ -21,7 +21,7 @@ The main advantage of this package is easy-to-use and simplicity. The package is
 # Plan for development
 In the near future, we will add further functionalities including Differential Evolutionary Optimization (DE) and Canonical Black-Litterman model.
 
-## Installation
+# Installation
 There are several packages required: `quadprog`, `DEoptim`, `NlcOptim`, `ggplot2` and `tidyverse`.
 We plan to submit this package to [CRAN](https://CRAN.R-project.org) in the near future. At the mean time, the package could be downloaded via github using `devtools`:
 
@@ -29,7 +29,8 @@ We plan to submit this package to [CRAN](https://CRAN.R-project.org) in the near
 devtools::install_github("thanhuwe8/quantport")
 ```
 
-## Example
+# Usage
+## Data and necessary calculation
 
 This is a basic example which shows you how to solve the portfolio optimization problem. We have the data in the form of data.frame with 10 assets monthly return as below:
 
@@ -54,17 +55,32 @@ kable(mean_vec)
 kable(cov_mat)
 ```
 
-Then we provide necessary inputs to the `TangencyQP` to find the weight of optimal portfolio with maximum Sharpe Ratio. 
+
+## Tangency Portfolio
+we provide necessary inputs to the `TangencyQP` to find the weight of optimal portfolio with maximum Sharpe Ratio.
 
 ```{r TangencyQP}
-tangency_result <- quantport::TangencyQP(ret=mean_vec,covmat=cov_mat,short=T,rf=0,freq="monthly") 
+tangency_result <- quantport::TangencyQP(ret=mean_vec,covmat=cov_mat,short=F,rf=0,freq="monthly") 
 optimal_weight <- data.frame(tangency_result$weight)
 ```
 
 ```{r barplot, echo=FALSE, dpi=400}
-ggplot()+geom_bar(aes(x=rownames(optimal_weight),y=optimal_weight[,1]), stat='identity', fill="#DE892C")+
+an <- names(mean_vec)
+ggplot()+geom_bar(aes(x=an,y=optimal_weight[,1]), stat='identity', fill="#DE892C")+
     xlab("Asset")+ylab("Weight")+ggtitle("Tangency Portfolio without short-selling constraint")
 ```
+
+```{r TangencyQP2}
+tangency_result <- quantport::TangencyQP(ret=mean_vec,covmat=cov_mat,short=T,rf=0,freq="monthly") 
+optimal_weight <- data.frame(tangency_result$weight)
+```
+
+```{r barplot2, echo=FALSE, dpi=400}
+an <- names(mean_vec)
+ggplot()+geom_bar(aes(x=an,y=optimal_weight[,1]), stat='identity', fill="#C92F3A")+
+    xlab("Asset")+ylab("Weight")+ggtitle("Tangency Portfolio without short-selling constraint")
+```
+
 
 Portfolio return and standard deviation are also stored and accessed using `$` operator
 
@@ -74,27 +90,70 @@ print(tangency_result$portfoliosd)
 print(tangency_result$SharpeRatio)
 ```
 
+
+## Efficient Frontiers
 There are other useful functions you could find in the vignettes of this package. Below is the efficient frontier with short-sale constraints. The dots to the right of the curve is single asset risk-return trade-off point. The red dot is tangency portfolio and the green dot is minimum variance portfolio. Mean return and standard deviation are both annualized assuming 252 trading days.
 
 ```{r efficient, dpi=400}
-ef <- quantport::showEfficient(ret=mean_vec,covmat=cov_mat,short=F,rf=0.05,freq="monthly",simpoints=200,assetpoints=T) 
+ef <- quantport::ShowEfficient(ret=mean_vec,covmat=cov_mat,short=F,rf=0.05,freq="monthly",simpoints=200,assetpoints=T) 
 ```
 
-The weight of all popular porfolio could be calculated using `UltimateWeight` function as below:
+## Equal weight and Inverse volatility (risk-parity) portfolio
+The weight and statistics information of several popular porfolios could be calculated using `UltimateWeight` function as below:
 
 ```{r ultimate, dpi = 400}
-final_result <- UltimateWeight(ret=mean_vec,covmat=cov_mat, short=T,target=0.08,rf=0,freq="monthly")
+final_result <- UltimateWeight(ret=mean_vec,covmat=cov_mat, short=F,rf=0,freq="monthly")
 kable(round(final_result[[1]],4))
 kable(final_result[[2]])
 ```
 
 
+## Black-Litterman
+### Canonical Black-Litterman
 
+We provide the function to calculate the posterior mean return and covariance matrix based on He and Litterman (1999) paper. We provide a simple example as below:
 
+First we limit our asset pool with only 4 assets
+```{r dataset2}
+kable(head(dataset1[,1:5],2))
+data2 <- dataset1[,2:5]
+```
 
+```{r dataset2-2}
+mean_vec2 <- apply(data2,2,mean)
+cov_mat2 <- cov(data2)
+kable(mean_vec2)
+kable(cov_mat2)
+```
 
+Presumbably, we have the market capitalization weight of those four assets and the $\delta$ parameter of 2.4 suggested by He and Litterman, then the $\Pi$ as below
+```{r dataset2-3}
+market <- c(0.1,0.4,0.1,0.4)
+PI <- PiCal(2.4,cov_mat2,market)
+print(PI)
+```
 
+We will express our subjective views through matrix `P` and vector `Q`. The first view is that the 1st asset will outperform  the 3rd asset by 1%. The second view is that that 3rd asset will have mean return of 3%. Then we formulate the views as below:
 
+```{r dataset2-4}
+P <- matrix(c(1,0,0,-1,0,1,0,0), ncol=4, byrow = T)
+Q <- c(0.01, 0.03)
+```
+
+Then the $\tau$ parameter is estimated as $1/n$ which is 0.25. The mean return and covariance matrix will be calculated accordingly:
+
+```{r dataset2-5}
+BL <- BLcanon(mean_vec2,cov_mat2,P,Q,PI,0.25)
+kable(BL$BLmean)
+kable(BL$BLvar)
+```
+
+To come up with the weight, we just input the mean return and the covariance matrix into optimizer to find the tangency portfolio:
+```{r dataset2-6, dpi=400}
+result_BL <- TangencyQP(BL$BLmean, BL$BLvar, F, 0.05, "monthly")
+barplot(result_BL$weight, names.arg = names(mean_vec2), col = "#C92F3A")
+head(result_BL$weight)
+```
 
 
 

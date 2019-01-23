@@ -55,8 +55,8 @@ TangencyQP <- function(ret, covmat, short=TRUE, rf=0, freq){
                rff = rf/4
                excessret = ret-rf
            })
+    # Short-selling is not allowed.
     if(short==FALSE){
-        # Numerical Solution
         N <- length(excessret)
         Dmat <- 2*covmat
         dvec <- rep.int(0,N)
@@ -69,7 +69,7 @@ TangencyQP <- function(ret, covmat, short=TRUE, rf=0, freq){
         portfoliosd <- sqrt(t(tangencyWeight)%*%covmat%*%tangencyWeight)
         sharpeRatio <- (portfolioret-rf)/portfoliosd
 
-    } else {
+    } else if(short==TRUE){
         # Analytical Solution
         covmat_inverse <- solve(covmat)
         ones <- rep(1,N)
@@ -81,26 +81,16 @@ TangencyQP <- function(ret, covmat, short=TRUE, rf=0, freq){
         portfolioret <- t(tangencyWeight)%*%ret
         portfoliosd <- sqrt(t(tangencyWeight)%*%covmat%*%tangencyWeight)
         sharpeRatio <- (portfolioret-rff)/portfoliosd
+    } else {
+        stop("Short should be TRUE or FALSE")
     }
     # switch to scale return and standard deviation
-    switch(freq,
-           daily = {
-               portfolioret <- portfolioret*252
-               portfoliosd <- portfoliosd*sqrt(252)
-               sharpeRatio <- (portfolioret-rf)/portfoliosd
-           },
-           monthly = {
-               portfolioret <- portfolioret*12
-               portfoliosd <- portfoliosd*sqrt(12)
-               sharpeRatio <- (portfolioret-rf)/portfoliosd
-           },
-           quarterly = {
-               portfolioret <- portfolioret*4
-               portfoliosd <- portfoliosd*sqrt(4)
-               sharpeRatio <- (portfolioret-ref)/portfoliosd
-           }
-    )
 
-    result <-  list(weight=tangencyWeight, portfolioret=portfolioret,
-                    portfoliosd=portfoliosd, SharpeRatio=sharpeRatio)
+    stats_final <- ScaleRetSD(portfolioret, portfoliosd, freq)
+
+    # SharpeRatio Calculation
+    sharpeRatio <- as.numeric((portfolioret-rf)/portfoliosd)
+
+    result <-  list(weight=tangencyWeight, portfolioret=stats_final$portfolioret,
+                    portfoliosd=stats_final$portfoliosd, SharpeRatio=sharpeRatio)
 }

@@ -4,7 +4,7 @@
 \alias{UltimateWeight}
 \title{Title}
 \usage{
-UltimateWeight(ret, covmat, short, target, rf = 0, freq)
+UltimateWeight(ret, covmat, short, rf = 0, freq)
 }
 \arguments{
 \item{freq}{}

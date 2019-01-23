@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-showEfficient <- function(ret, covmat, short,rf=0, freq, simpoints, assetpoints){
+ShowEfficient <- function(ret, covmat, short,rf=0, freq, simpoints, assetpoints){
     switch (freq,
             daily = {
                 ret_range <- seq(min(ret)*252+0.0001,max(ret)*252-0.0001, length.out=simpoints)
@@ -50,8 +50,9 @@ showEfficient <- function(ret, covmat, short,rf=0, freq, simpoints, assetpoints)
     tangency_ret <- tangency_optim$portfolioret
 
     # Minimum Variance Portfolio
-    minvar_sd <-min(sd_vec)
-    minvar_ret <- asset_ret[which(minvar_sd==min(minvar_sd))]
+    minvar_optim <- GlobalMinvar(ret=ret,covmat=covmat,short=short,freq=freq)
+    minvar_sd <-minvar_optim$portfoliosd
+    minvar_ret <- minvar_optim$portfolioret
 
     # Inverse Volatility Portfolio
     inverse_optim <- InverseVola(ret=ret, covmat=covmat, freq=freq)
@@ -77,7 +78,8 @@ showEfficient <- function(ret, covmat, short,rf=0, freq, simpoints, assetpoints)
             geom_point(aes(x=inverse_sd,y=inverse_ret), colour="#1B7369",size=3)+
             annotate("text",x=inverse_sd+0.01,y=inverse_ret+0.02, label="IV")+
             geom_point(aes(x=equalweight_sd,y=equalweight_ret), colour="#266ECD",size=3)+
-            annotate("text",x=equalweight_sd+0.01,y=equalweight_ret-0.02, label="EQW")
+            annotate("text",x=equalweight_sd+0.01,y=equalweight_ret-0.02, label="EQW")+
+            theme(legend.position="top")
     } else if (assetpoints==FALSE){
         plotdataF <- ret_and_sd[-(1:noa),]
         plotfin <- ggplot(plotdataF, aes(x=portfoliosd,y=portfolioret))+ geom_point() +

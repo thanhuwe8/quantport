@@ -23,27 +23,17 @@ EqualWeight <- function(ret, covmat, freq){
     # Calculate Equal Weight first
     eqw <- rep(1/N,N)
 
-    portfolio_sd <- t(eqw)%*%covmat%*%eqw
+    portfolio_sd <- sqrt(t(eqw)%*%covmat%*%eqw)
     portfolio_ret <- (t(eqw)%*%ret)
 
-    portfoliosd <- portfolio_sd[1,1]
-    portfolioret <- portfolio_ret[1,1]
+    portfoliosd <- portfolio_sd
+    portfolioret <- portfolio_ret
 
-    switch(freq,
-           daily={
-               portfoliosd <- sqrt(portfoliosd*252)
-               portfolioret <- portfolioret*252
-           },
-           monthly={
-               portfoliosd <- sqrt(portfoliosd*12)
-               portfolioret <- portfolioret*12
-           },
-           quarterly={
-               portfoliosd <- sqrt(portfoliosd*4)
-               portfolioret <- portfolioret*4
-           })
+    stats_final <- ScaleRetSD(portfolioret, portfoliosd, freq)
+
     # return annualized value for portfolio return and portfolio sd
-    result <- list(weight=eqw, portfolioret=portfolioret, portfoliosd=portfoliosd)
+    result <- list(weight=eqw, portfolioret=stats_final$portfolioret,
+                   portfoliosd=stats_final$portfoliosd)
 
 }
 

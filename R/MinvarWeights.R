@@ -21,18 +21,11 @@ MinvarWeight <- function(ret, covmat, target, short=TRUE, freq){
     # target is annualized number (for instance 7%=0.07)
     N <- length(ret)
     freq <- match.arg(freq, c("daily", "monthly", "quarterly"))
+
     # target are transformed into frequency data
-    switch (freq,
-        daily = {
-            target_scale <- target/252
-        },
-        monthly = {
-            target_scale <- target/12
-        },
-        quarterly = {
-            target_scale <- target/4
-        }
-    )
+    target_scale <- ScaleTarget(target,freq)
+
+    # Check if target is correct
     if (target_scale < min(ret) || target_scale > max(ret)){
         stop("Target should be limited to min and max of the return vector")
     }
@@ -60,16 +53,8 @@ MinvarWeight <- function(ret, covmat, target, short=TRUE, freq){
         stop("Short argument should be TRUE or FALSE")
     }
     effw <- round(opt_result$solution,4)
-    switch(freq,
-           daily={
-               portfoliosd <- sqrt(opt_result$value*252)
-           },
-           monthly={
-               portfoliosd <- sqrt(opt_result$value*12)
-           },
-           quarterly={
-               portfoliosd <- sqrt(opt_result$value*4)
-           })
+
+    portfoliosd <- ScaleSd(opt_result, freq)
     # return annualized value for portfolio return and portfolio sd
     result <- list(weight=effw, portfolioret=target, portfoliosd=portfoliosd)
 

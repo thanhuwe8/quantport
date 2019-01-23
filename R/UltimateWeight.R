@@ -3,7 +3,6 @@
 #' @param ret
 #' @param covmat
 #' @param short
-#' @param target
 #' @param rf
 #' @param freq
 #'
@@ -11,9 +10,11 @@
 #' @export
 #'
 #' @examples
-UltimateWeight <- function(ret,covmat,short,target,rf=0,freq){
+UltimateWeight <- function(ret,covmat,short,rf=0,freq){
 
-    weight_type <- c("Tangency", "MinimumVariance", "InverseVolatility", "EqualWeight")
+    weight_type <- c("Tangency", "MinimumVariance",
+                     "InverseVolatility","EqualWeight")
+
     # Tangency portfolio
     tangency_optim <- TangencyQP(ret=ret,covmat=covmat,short=short,rf=rf,freq)
     tangency_weight <- tangency_optim$weight
@@ -21,7 +22,7 @@ UltimateWeight <- function(ret,covmat,short,target,rf=0,freq){
     tangency_ret <- tangency_optim$portfolioret
 
     # Minimum Variance Portfolio
-    minvar_optim <- MinvarWeight(ret, covmat, target, short=TRUE, freq)
+    minvar_optim <- GlobalMinvar(ret=ret, covmat=covmat, short=short, freq=freq)
     minvar_weight <- minvar_optim$weight
     minvar_sd <- minvar_optim$portfoliosd
     minvar_ret <- minvar_optim$portfolioret
@@ -38,15 +39,26 @@ UltimateWeight <- function(ret,covmat,short,target,rf=0,freq){
     equalweight_sd <- equalweight_optim$portfoliosd
     equalweight_ret <- equalweight_optim$portfolioret
 
+    # Arrange Stats data
     weight_type <- c("Tangency", "MinimumVariance", "InverseVolatility", "EqualWeight")
     SD_type <- c(tangency_sd, minvar_sd, inverse_sd, equalweight_sd)
     Ret_type <- c(tangency_ret, minvar_ret, inverse_ret, equalweight_ret)
     sharpe_ratio <- (Ret_type-rf)/SD_type
 
     final_weight <- NULL
-    final_weight <- data.frame(cbind(final_weight, tangency_weight, minvar_weight, inverse_weight, equalweight_weight))
+    final_weight <- data.frame(cbind(final_weight, tangency_weight,
+                                     minvar_weight, inverse_weight, equalweight_weight))
     colnames(final_weight) <- weight_type
-    metrics <-data.frame(WeightType=weight_type, SD=SD_type, Return=Ret_type,SharpeRatio=sharpe_ratio)
+
+    # Diversification measure
+    WE <- apply(final_weight,2,WeightEntropy)
+    HR <- apply(final_weight,2,Herfindahl)
+    DR <- apply(final_weight,2,DiversificationRatio,covmat=covmat)
+
+    metrics <-data.frame(WeightType=weight_type, SD=SD_type, Return=Ret_type,
+                         SharpeRatio=sharpe_ratio, WeightEntropy=WE,
+                         Herfindahl=HR,DiversificationRatio=DR)
+
     return(list(final_weight, metrics))
 
 }

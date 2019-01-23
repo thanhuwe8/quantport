@@ -24,27 +24,18 @@ InverseVola <- function(ret, covmat, freq){
     inverse_sd <- 1/asset_sd
     ivw <- inverse_sd/sum(inverse_sd)
 
-    portfolio_sd <- t(ivw)%*%covmat%*%ivw
+    portfolio_sd <- sqrt(t(ivw)%*%covmat%*%ivw)
     portfolio_ret <- (t(ivw)%*%ret)
 
-    portfoliosd <- portfolio_sd[1,1]
-    portfolioret <- portfolio_ret[1,1]
+    portfoliosd <- portfolio_sd
+    portfolioret <- portfolio_ret
 
-    switch(freq,
-           daily={
-               portfoliosd <- sqrt(portfoliosd*252)
-               portfolioret <- portfolioret*252
-           },
-           monthly={
-               portfoliosd <- sqrt(portfoliosd*12)
-               portfolioret <- portfolioret*12
-           },
-           quarterly={
-               portfoliosd <- sqrt(portfoliosd*4)
-               portfolioret <- portfolioret*4
-           })
+    # Utility function
+    stats_final <- ScaleRetSD(portfolioret, portfoliosd, freq)
+
     # return annualized value for portfolio return and portfolio sd
-    result <- list(weight=ivw, portfolioret=portfolioret, portfoliosd=portfoliosd)
+    result <- list(weight=ivw, portfolioret=stats_final$portfolioret,
+                   portfoliosd=stats_final$portfoliosd)
 
 }
 
