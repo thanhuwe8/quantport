@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "thanhuwe8@example.com")
 Description: Portfolio Optimization using Quadratic Programming and Sequential Programming
-License: GPL-2
+License: GPL-3
 Encoding: UTF-8
 Imports: quadprog, ggplot2, NlcOptim, tidyverse
 LazyData: true

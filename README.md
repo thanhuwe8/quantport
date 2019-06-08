@@ -176,6 +176,13 @@ kable(final_result[[2]])
 | InverseVolatility | InverseVolatility | 0.1872915 | 0.2157626 |    1.152015 |      2.245068 |  0.8874638 |             1.494049 |
 | EqualWeight       | EqualWeight       | 0.1913088 | 0.2193945 |    1.146808 |      2.302585 |  0.9000000 |             1.525267 |
 
+## Sequential Quadratic Programming for lower and upper boundary
+
+With additional constraints for single asset weight, we have another
+tools to come up with the exact solution. The Sequential Quadratic
+Programming is implemented by the function `TangencySP`. Upper boundary
+and lower boundary must be passed as two arguments of the function.
+
 ## Black-Litterman
 
 ### Canonical Black-Litterman
@@ -240,7 +247,7 @@ print(PI)
 
 We will express our subjective views through matrix `P` and vector `Q`.
 The first view is that the 1st asset will outperform the 3rd asset by
-1%. The second view is that that 3rd asset will have mean return of 3%.
+1%. The second view is that the 3rd asset will have mean return of 3%.
 Then we formulate the views as below:
 
 ``` r
@@ -288,3 +295,7 @@ barplot(result_BL$weight, names.arg = names(mean_vec2), col = "#C92F3A")
 head(result_BL$weight)
 #> [1] 0.2378 0.7622 0.0000 0.0000
 ```
+
+# License
+
+This project is licensed under the GPL3 License
