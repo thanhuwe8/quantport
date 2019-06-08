@@ -9,7 +9,7 @@
 Portfolio Optimization using Quadratic Programming and Sequential Programming
 }
 \author{
-\strong{Maintainer}: Thanh Nguyen Minh \email{thanhuwe8@example.com}
+\strong{Maintainer}: Thanh Nguyen Minh \email{thanhuwe8@gmail.com}
 
 }
 \keyword{internal}

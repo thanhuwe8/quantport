@@ -5,7 +5,7 @@ Authors@R:
     person(given = "Thanh",
            family = "Nguyen Minh",
            role = c("aut", "cre"),
-           email = "thanhuwe8@example.com")
+           email = "thanhuwe8@gmail.com")
 Description: Portfolio Optimization using Quadratic Programming and Sequential Programming
 License: GPL-3
 Encoding: UTF-8
